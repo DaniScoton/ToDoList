@@ -2,10 +2,9 @@ const taskInput = document.getElementById('task-input');
 const addButton = document.getElementById('add-button');
 const todoList = document.getElementById('todo-list');
 
-// Função para adicionar uma tarefa
+// Função para adicionar uma tarefa ou exibir mensagem se não houver texto
 function addTask() {
   const taskText = taskInput.value;
-
 
   if (taskText.trim() !== '') {
     const taskItem = document.createElement('li');
@@ -30,9 +29,33 @@ function addTask() {
     // Adiciona um event listener para o botão de exclusão
     deleteButton.addEventListener('click', function () {
       taskItem.remove();
+      checkEmpty(); // Verifica se a lista está vazia após a exclusão
     });
 
     taskInput.value = '';
+    checkEmpty(); // Verifica se a lista está vazia após adicionar uma tarefa
+  } else {
+    alert('Por favor, insira uma tarefa válida.');
+  }
+}
+
+// Função para verificar se a lista está vazia e exibir a mensagem adequada
+function checkEmpty() {
+  const noTasksMessage = document.querySelector('.no-tasks-message');
+
+  if (todoList.children.length === 0) {
+    noTasksMessage.style.display = 'block';
+  } else {
+    noTasksMessage.style.display = 'none';
+  }
+}
+
+function toggleTaskComplete(checkbox) {
+  const label = checkbox.nextElementSibling;
+  if (checkbox.checked) {
+    label.style.textDecoration = 'line-through';
+  } else {
+    label.style.textDecoration = 'none';
   }
 }
 
@@ -45,3 +68,13 @@ taskInput.addEventListener('keydown', function (event) {
     addTask();
   }
 });
+
+function onTaskItemClick(event) {
+  if (event.target.matches('.checkbox-custom')) {
+    toggleTaskComplete(event.target);
+  }
+}
+
+// Verifica se a lista está vazia no carregamento inicial
+todoList.addEventListener('change', onTaskItemClick);
+checkEmpty();
